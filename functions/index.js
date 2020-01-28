@@ -5,6 +5,10 @@ const bodyParser = require('body-parser');
 const axios = require('axios');
 const CryptoJS = require('crypto-js');
 const app = express();
+const URL = 'https://sandboxapi.rapyd.net';
+const key = '60043F6D3C676B824DF1';
+const secret = '0f658c5917dbec956fb06a7cd21edb6f6b1518c7b8fd13bceb261d5d970922f57252fa267a036c33';
+
 app.use(cors({ origin: true }));
 app.use(express.static('public'));
 
@@ -12,186 +16,57 @@ app.use(bodyParser.urlencoded({extended: false}));
 app.use(bodyParser.json());
 
 
-app.post('/trade', (req, res) => {
-  let apiKey = req.body.key.toString();
-  let apiSecret = req.body.secret.toString();
-  let uri = "https://api.bittrex.com/v3/orders";
-  let method = "POST"
-  let coin = req.body.coin.toString(); //DGB-USD || BTC-USD
-  let content = `{"marketSymbol": "${coin}","direction": "sell","type": "MARKET","quantity": ${req.body.amount.toString()},"timeInForce": "FILL_OR_KILL"}`;
-  let timestamp = req.body.timestamp;
-  let contentHash = CryptoJS.SHA512(content).toString(CryptoJS.enc.Hex);
-  let preSign = [timestamp,uri,method.toUpperCase(), contentHash].join('');
-  let signature = CryptoJS.HmacSHA512(preSign, apiSecret).toString(CryptoJS.enc.Hex);
+app.post('/create', (req, res) => {
+  let salt = Math.abs(CryptoJS.lib.WordArray.random(12).words[0]);
+  let timestamp = (Math.floor(new Date().getTime() / 1000) - 10).toString();
+  let uri = '/v1/user';
+  let fullUri = `${URL}/v1/user`;
+  let method = "post";
+  let body = '';
+  if(req.body.phone_number.toString() != '{}' && req.body.phone_number.toString() != ''){
+    body = {
+      first_name: req.body.first_name.toString(),
+      last_name: req.body.last_name.toString(),
+      phone_number: req.body.phone_number.toString(),
+      email: req.body.email.toString(),
+      type: req.body.type.toString(),
+      business_details: {},
+      metadata: {
+        merchant_defined: true
+      }
+    } 
+  }
+  let details = JSON.stringify(body);
+  let to_sign = method + uri + salt + timestamp + key + secret + details;
+  let signature = CryptoJS.enc.Hex.stringify(CryptoJS.HmacSHA256(to_sign, secret));
+  signature = CryptoJS.enc.Base64.stringify(CryptoJS.enc.Utf8.parse(signature));
   let headers = {};
-  headers['Api-Timestamp'] = timestamp;
-  headers['Api-Key'] = apiKey;
-  headers['Accept'] = 'application/json';
-  headers['Application-Id'] = 223;
+  headers['access_key'] = key;
   headers['Content-Type'] = 'application/json';
-  headers['Api-Signature'] = signature;
-  headers['Api-Content-Hash'] = contentHash;
+  headers['salt'] = salt;
+  headers['signature'] = signature;
+  headers['timestamp'] = timestamp;
 
   const config = {
-      method: method,
-      url: uri,
+      method: "POST",
+      url: fullUri,
       headers: headers,
-      data: content
-    }
+      data: details
+    }  
   axios(config).then(response => {
-    console.log(response.data);
       if (response.data){
         res.send(response.data);
-      }else{
-        res.end();
       }
-    })
-    .catch(error => {console.log(error);
-    });
-});
-
-app.post('/balance', (req, res) => {
-  let apiKey = req.body.key.toString();
-  let apiSecret = req.body.secret.toString();
-  let coin = req.body.coin.toString();
-  let uri = "https://api.bittrex.com/v3/balances/" + coin; //dgb || btc
-  let method = "GET"
-  let content = '';
-  let timestamp = new Date().getTime();
-  let contentHash = CryptoJS.SHA512(content).toString(CryptoJS.enc.Hex);
-  let preSign = [timestamp,uri,method.toUpperCase(), contentHash].join('');
-  let signature = CryptoJS.HmacSHA512(preSign, apiSecret).toString(CryptoJS.enc.Hex);
-  let headers = {};
-  headers['Api-Timestamp'] = timestamp;
-  headers['Api-Key'] = apiKey;
-  headers['Accept'] = 'application/json';
-  headers['Content-Type'] = 'application/json';
-  headers['Api-Signature'] = signature;
-  headers['Api-Content-Hash'] = contentHash;
-
-  const config = {
-      method: method,
-      url: uri,
-      headers: headers
-    }
-  axios(config).then(response => {
-    console.log(response.data);
-      if (response.data){
-        res.send(response.data);
-      }else{
-        res.end();
+    }).catch(function (error) {
+      if (error.response) {
+        res.send(error.response, error.response.data);
+      } else if (error.request) {
+        res.send(error.request);
+      } else {
+        res.send(error.message);
       }
-    })
-    .catch(error => {console.log(error);
-    });
-});
-
-app.post('/deposit', (req, res) => {
-  let apiKey = req.body.key.toString();
-  let apiSecret = req.body.secret.toString();
-  let uri = "https://api.bittrex.com/v3/deposits/open";
-  let method = "GET"
-  let content = '';
-  let timestamp = new Date().getTime();
-  let contentHash = CryptoJS.SHA512(content).toString(CryptoJS.enc.Hex);
-  let preSign = [timestamp,uri,method.toUpperCase(), contentHash].join('');
-  let signature = CryptoJS.HmacSHA512(preSign, apiSecret).toString(CryptoJS.enc.Hex);
-  let headers = {};
-  headers['Api-Timestamp'] = timestamp;
-  headers['Api-Key'] = apiKey;
-  headers['Accept'] = 'application/json';
-  headers['Content-Type'] = 'application/json';
-  headers['Api-Signature'] = signature;
-  headers['Api-Content-Hash'] = contentHash;
-
-  const config = {
-      method: method,
-      url: uri,
-      headers: headers
-    }
-  axios(config).then(response => {
-    console.log(response.data);
-      if (response.data){
-        res.send(response.data);
-      }else{
-        res.end();
-      }
-    })
-    .catch(error => {console.log(error);
-    });
-});
-
-app.post('/address', (req, res) => {
-  let apiKey = req.body.key.toString();
-  let apiSecret = req.body.secret.toString();
-  let coin = req.body.coin.toString();
-  let uri = "https://api.bittrex.com/v3/addresses";
-  let method = "POST"
-  let content = `{"currencySymbol": "${coin}"}`;
-  let timestamp = new Date().getTime();
-  let contentHash = CryptoJS.SHA512(content).toString(CryptoJS.enc.Hex);
-  let preSign = [timestamp,uri,method.toUpperCase(), contentHash].join('');
-  let signature = CryptoJS.HmacSHA512(preSign, apiSecret).toString(CryptoJS.enc.Hex);
-  let headers = {};
-  headers['Api-Timestamp'] = timestamp;
-  headers['Api-Key'] = apiKey;
-  headers['Accept'] = 'application/json';
-  headers['Content-Type'] = 'application/json';
-  headers['Api-Signature'] = signature;
-  headers['Api-Content-Hash'] = contentHash;
-
-  const config = {
-      method: method,
-      url: uri,
-      headers: headers,
-      data: content
-    }
-  axios(config).then(response => {
-    console.log(response.data);
-      if (response.data){
-        res.send(response.data);
-      }else{
-        res.end();
-      }
-    })
-    .catch(error => {res.send(error);
-    });
-});
-
-app.post('/getaddress', (req, res) => {
-  let apiKey = req.body.key.toString();
-  let apiSecret = req.body.secret.toString();
-  let coin = req.body.coin.toString();
-  let uri = "https://api.bittrex.com/v3/addresses/" + coin;
-  let method = "GET"
-  let content = '';
-  let timestamp = new Date().getTime();
-  let contentHash = CryptoJS.SHA512(content).toString(CryptoJS.enc.Hex);
-  let preSign = [timestamp,uri,method.toUpperCase(), contentHash].join('');
-  let signature = CryptoJS.HmacSHA512(preSign, apiSecret).toString(CryptoJS.enc.Hex);
-  let headers = {};
-  headers['Api-Timestamp'] = timestamp;
-  headers['Api-Key'] = apiKey;
-  headers['Accept'] = 'application/json';
-  headers['Content-Type'] = 'application/json';
-  headers['Api-Signature'] = signature;
-  headers['Api-Content-Hash'] = contentHash;
-
-  const config = {
-      method: method,
-      url: uri,
-      headers: headers,
-    }
-  axios(config).then(response => {
-    console.log(response.data);
-      if (response.data){
-        res.send(response.data);
-      }else{
-        res.end();
-      }
-    })
-    .catch(error => {res.send(error);
+      console.log("78",error.config);
     });
 });
   
-exports.bittrex = functions.https.onRequest(app);
+exports.rapyd = functions.https.onRequest(app);
