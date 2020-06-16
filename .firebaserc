@@ -1,5 +1,6 @@
 {
   "projects": {
-    "default": "b30-rapyd"
+    "default": "b30-rapyd",
+    "test": "b30-rapyd"
   }
 }
