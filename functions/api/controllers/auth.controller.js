@@ -51,7 +51,7 @@ class AuthController {
             }
 
             const response = await axios(config);
-            res.send(response.data);
+            res.send(response.data.id);
 
         } catch (error) {
             next(error)
@@ -120,6 +120,10 @@ class AuthController {
                             postalCode: req.body.postalCode,
                             country: req.body.country
                         }
+                    },
+                    {
+                        fieldId: "individualSsn",
+                        value: req.body.ssn
                     }
                 ]
             }
