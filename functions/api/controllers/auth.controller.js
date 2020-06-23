@@ -62,7 +62,7 @@ class AuthController {
         try {
 
             const timestamp = new Date().getTime();
-            const fullUrl = `${functions.config().wyre.url}${ACCOUNT_URL}/${req.params.user_id}?timestamp=${timestamp}`;
+            const fullUrl = `${functions.config().wyre.url}${ACCOUNT_URL}/${req.params.user_id}?masqueradeAs=${req.params.user_id}&timestamp=${timestamp}`;
             const headers = {};
             const details = "";
             headers['Content-Type'] = 'application/json';
@@ -87,7 +87,7 @@ class AuthController {
         try {
 
             const timestamp = new Date().getTime();
-            const fullUrl = `${functions.config().wyre.url}${ACCOUNT_URL}/${req.params.user_id}?timestamp=${timestamp}`;
+            const fullUrl = `${functions.config().wyre.url}${ACCOUNT_URL}/${req.params.user_id}?masqueradeAs=${req.params.user_id}&timestamp=${timestamp}`;
             const headers = {};
             const body = {
                 type: 'INDIVIDUAL',
