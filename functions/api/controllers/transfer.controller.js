@@ -10,8 +10,11 @@ class transferController {
             const timestamp = new Date().getTime();
             const fullUrl = `${functions.config().wyre.url}${TRANSFERS_URL}?timestamp=${timestamp}`;
             const headers = {};
+            const type = req.body.accountsrn.split(':');
+            let accountsource = req.body.accountsrn;
+            if(type[0] === 'paymentmethod') accountsource += ':ach';
             const body = {
-                source: "account:" + req.body.accountId,
+                source: accountsource,
                 sourceAmount: req.body.sourceAmount,
                 sourceCurrency: req.body.sourceCurrency,
                 dest: req.body.dest,

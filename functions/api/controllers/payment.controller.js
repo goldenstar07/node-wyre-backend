@@ -11,7 +11,6 @@ class PaymentController {
             const fullUrl = `${functions.config().wyre.url}${PAYMENTMETHODS_URL}?timestamp=${timestamp}`;
             const headers = {};
             const body = {
-                account: "account:" + req.body.accountId,
                 publicToken: req.body.publicToken,
                 paymentMethodType: req.body.paymentMethodType ? req.body.paymentMethodType : "LOCAL_TRANSFER",
                 country: "US"
@@ -113,7 +112,7 @@ class PaymentController {
             const fullUrl = `${functions.config().wyre.url}${PAYMENTMETHOD_URL}/${req.params.payment_id}/attach?timestamp=${timestamp}`;
             const headers = {};
             const body = {
-                blockchain: req.body.blockchain ? req.body.blockchain : "BTC",
+                blockchain: req.body.blockchain ? req.body.blockchain : "ALL",
                 notify: req.body.notify ? req.body.notify : null,
                 muteMessages: req.body.muteMessages ? req.body.muteMessages : false
             }
