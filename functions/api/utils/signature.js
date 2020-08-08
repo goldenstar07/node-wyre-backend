@@ -3,7 +3,7 @@ const functions = require('firebase-functions');
 
 const signature = (url, data) => {
     const signData = url + data;
-    const signatureToken = CryptoJS.enc.Hex.stringify(CryptoJS.HmacSHA256(signData.toString(CryptoJS.enc.Utf8), functions.config().wyre.sec_key));
+    const signatureToken = CryptoJS.enc.Hex.stringify(CryptoJS.HmacSHA256(signData.toString(CryptoJS.enc.Utf8), functions.config().wyre.sec));
     return signatureToken;
 }
 

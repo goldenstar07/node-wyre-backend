@@ -32,7 +32,7 @@ class transferController {
             const details = JSON.stringify(body);
 
             headers['Content-Type'] = 'application/json';
-            headers['X-Api-Key'] = functions.config().wyre.api_key;
+            headers['X-Api-Key'] = functions.config().wyre.key;
             headers['X-Api-Signature'] = signature(fullUrl, details);
 
             const config = {
@@ -57,7 +57,7 @@ class transferController {
                 const headers = {};
                 const details = "";
                 headers['Content-Type'] = 'application/json';
-                headers['X-Api-Key'] = functions.config().wyre.api_key;
+                headers['X-Api-Key'] = functions.config().wyre.key;
                 headers['X-Api-Signature'] = signature(fullUrl, details);
 
                 const config = {
@@ -81,7 +81,7 @@ class transferController {
                 const headers = {};
                 const details = "";
                 headers['Content-Type'] = 'application/json';
-                headers['X-Api-Key'] = functions.config().wyre.api_key;
+                headers['X-Api-Key'] = functions.config().wyre.key;
                 headers['X-Api-Signature'] = signature(fullUrl, details);
 
                 const config = {
@@ -103,7 +103,7 @@ class transferController {
                 const headers = {};
                 const details = "";
                 headers['Content-Type'] = 'application/json';
-                headers['X-Api-Key'] = functions.config().wyre.api_key;
+                headers['X-Api-Key'] = functions.config().wyre.key;
                 headers['X-Api-Signature'] = signature(fullUrl, details);
 
                 const config = {
@@ -133,7 +133,7 @@ class transferController {
             const details = JSON.stringify(body);
 
             headers['Content-Type'] = 'application/json';
-            headers['X-Api-Key'] = functions.config().wyre.api_key;
+            headers['X-Api-Key'] = functions.config().wyre.key;
             headers['X-Api-Signature'] = signature(fullUrl, details);
 
             const config = {

@@ -1,6 +1,6 @@
 {
   "projects": {
-    "default": "b30-rapyd",
-    "test": "b30-rapyd"
+    "default": "digicafe-dashboard",
+    "test": "digicafe-dashboard"
   }
 }

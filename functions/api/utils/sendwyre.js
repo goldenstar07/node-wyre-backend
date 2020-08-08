@@ -36,7 +36,7 @@ const buildRequestOptions = (method, path, params, options) => {
         method: method,
         headers: {
             ...options.headers,
-            "X-Api-Key": functions.config().wyre.api_key,
+            "X-Api-Key": functions.config().wyre.key,
         },
         qs: {
             ...options.qs,
