@@ -13,6 +13,6 @@ router.route('/:payment_id/:account_id')
 	.get(paymentController.getPayment);
 
 router.route('/attach/:payment_id/:account_id')
-	.put(paymentController.attachBlockChain);
+	.post(paymentController.attachBlockChain);
 
 module.exports = { paymentRoute: router }
