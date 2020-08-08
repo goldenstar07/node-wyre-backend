@@ -147,47 +147,54 @@ class AuthController {
             const timestamp = new Date().getTime();
             const fullUrl = `${functions.config().wyre.url}${ACCOUNT_URL}/${req.params.user_id}?masqueradeAs=${req.params.user_id}&timestamp=${timestamp}`;
             const headers = {};
+            let profilefield = [];
+            if (req.body.name)
+                profilefield.push({
+                    fieldId: "individualLegalName",
+                    value: req.body.name
+                });
+            if (req.body.phonenumber)
+                profilefield.push({
+                    fieldId: "individualCellphoneNumber",
+                    value: req.body.phonenumber
+                });
+            if (req.body.email)
+                profilefield.push({
+                    fieldId: "individualEmail",
+                    value: req.body.email
+                });
+            if (req.body.dob)
+                profilefield.push({
+                    fieldId: "individualDateOfBirth",
+                    value: req.body.dob
+                });
+            if (req.body.ssn)
+                profilefield.push({
+                    fieldId: "individualSsn",
+                    value: req.body.ssn
+                });
+            if (req.body.street1 || req.body.street2 || req.body.city || req.body.state || req.body.postalCode || req.body.country) {
+                profilefield.push({
+                    fieldId: "individualResidenceAddress",
+                    value: {
+                        street1: req.body.street1,
+                        street2: req.body.street2,
+                        city: req.body.city,
+                        state: req.body.state,
+                        postalCode: req.body.postalCode,
+                        country: req.body.country
+                    }
+                });
+            }
             const body = {
                 type: 'INDIVIDUAL',
                 country: 'US',
                 subaccount: true,
-                profileFields:[
-                    {
-                        fieldId: "individualLegalName",
-                        value: req.body.name
-                    },
-                    {
-                        fieldId: "individualCellphoneNumber",
-                        value: req.body.phonenumber
-                    },
-                    {
-                        fieldId: "individualEmail",
-                        value: req.body.email
-                    },
-                    {
-                        fieldId: "individualDateOfBirth",
-                        value: req.body.dob
-                    },
-                    {
-                        fieldId: "individualResidenceAddress",
-                        value: {
-                            street1: req.body.street1,
-                            street2: req.body.street2,
-                            city: req.body.city,
-                            state: req.body.state,
-                            postalCode: req.body.postalCode,
-                            country: req.body.country
-                        }
-                    },
-                    {
-                        fieldId: "individualSsn",
-                        value: req.body.ssn
-                    }
-                ]
+                profileFields: profilefield
             }
             const details = JSON.stringify(body);
             headers['Content-Type'] = 'application/json';
-            headers['X-Api-Key'] = functions.config().wyre.key;
+            headers['X-Api-Key'] = functions.config().wyre.api_key;
             headers['X-Api-Signature'] = signature(fullUrl, details);
 
             const config = {
