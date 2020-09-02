@@ -74,7 +74,7 @@ const buildSignature = (requestOptions) => {
             buffers.push(Buffer.from(JSON.stringify(requestOptions.body), encoding));
     }
 
-    return crypto.createHmac("sha256", functions.config().wyre.sec_key)
+    return crypto.createHmac("sha256", functions.config().wyre.sec)
         .update(Buffer.concat(buffers))
         .digest("hex")
 }

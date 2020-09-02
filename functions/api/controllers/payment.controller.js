@@ -6,19 +6,30 @@ const { PAYMENTMETHOD_URL, PAYMENTMETHODS_URL } = require('../constants/urls');
 
 class PaymentController {
     async createPayment(req, res, next) {
+        console.log(req.body)
         try {
             const timestamp = new Date().getTime();
-            const fullUrl = `${functions.config().wyre.url}${PAYMENTMETHODS_URL}?masqueradeAs=${req.params.account_id}&timestamp=${timestamp}`;
+            const fullUrl = `${functions.config().wyre.url}${PAYMENTMETHODS_URL}?timestamp=${timestamp}`;
             const headers = {};
             const body = {
-                publicToken: req.body.publicToken,
-                paymentMethodType: req.body.paymentMethodType ? req.body.paymentMethodType : "LOCAL_TRANSFER",
-                country: "US"
+                owner: req.body.owner,
+                paymentMethodType: "INTERNATIONAL_TRANSFER",
+                paymentType: "LOCAL_BANK_WIRE",
+                currency: "USD",
+                country: "US",
+                beneficiaryType: "CORPORATE",
+                beneficiaryCompanyName: req.body.companyName,
+                beneficiaryEinTin: req.body.ein,
+                beneficiaryLandlineNumber: req.body.phone,
+                beneficiaryEmailAddress: req.body.email,
+                accountNumber: req.body.accountNumber,
+                routingNumber: req.body.routingNumber,
+                accountType: req.body.accountType,
+                chargeablePM: false
             }
             const details = JSON.stringify(body);
-
             headers['Content-Type'] = 'application/json';
-            headers['X-Api-Key'] = functions.config().wyre.api_key;
+            headers['X-Api-Key'] = functions.config().wyre.key;
             headers['X-Api-Signature'] = signature(fullUrl, details);
 
             const config = {
@@ -30,7 +41,6 @@ class PaymentController {
 
             const response = await axios(config);
             res.send(response.data);
-
         } catch (error) {
             next(error)
         }
@@ -39,11 +49,11 @@ class PaymentController {
     async deletePayment(req, res, next) {
         try {
                 const timestamp = new Date().getTime();
-                const fullUrl = `${functions.config().wyre.url}${PAYMENTMETHOD_URL}/${req.params.payment_id}?masqueradeAs=${req.params.account_id}&timestamp=${timestamp}`;
+                const fullUrl = `${functions.config().wyre.url}${PAYMENTMETHOD_URL}/${req.params.payment_id}?timestamp=${timestamp}`;
                 const headers = {};
                 const details = "";
                 headers['Content-Type'] = 'application/json';
-                headers['X-Api-Key'] = functions.config().wyre.api_key;
+                headers['X-Api-Key'] = functions.config().wyre.key;
                 headers['X-Api-Signature'] = signature(fullUrl, details);
 
                 const config = {
@@ -63,11 +73,11 @@ class PaymentController {
     async listPayment(req, res, next) {
         try {
                 const timestamp = new Date().getTime();
-                const fullUrl = `${functions.config().wyre.url}${PAYMENTMETHODS_URL}?masqueradeAs=${req.params.account_id}&timestamp=${timestamp}`;
+                const fullUrl = `${functions.config().wyre.url}${PAYMENTMETHODS_URL}?timestamp=${timestamp}`;
                 const headers = {};
                 const details = "";
                 headers['Content-Type'] = 'application/json';
-                headers['X-Api-Key'] = functions.config().wyre.api_key;
+                headers['X-Api-Key'] = functions.config().wyre.key;
                 headers['X-Api-Signature'] = signature(fullUrl, details);
 
                 const config = {
@@ -85,11 +95,11 @@ class PaymentController {
     async getPayment(req, res, next) {
         try {
                 const timestamp = new Date().getTime();
-                const fullUrl = `${functions.config().wyre.url}${PAYMENTMETHOD_URL}/${req.params.payment_id}?masqueradeAs=${req.params.account_id}&timestamp=${timestamp}`;
+                const fullUrl = `${functions.config().wyre.url}${PAYMENTMETHOD_URL}/${req.params.payment_id}?timestamp=${timestamp}`;
                 const headers = {};
                 const details = "";
                 headers['Content-Type'] = 'application/json';
-                headers['X-Api-Key'] = functions.config().wyre.api_key;
+                headers['X-Api-Key'] = functions.config().wyre.key;
                 headers['X-Api-Signature'] = signature(fullUrl, details);
 
                 const config = {
@@ -109,17 +119,17 @@ class PaymentController {
     async attachBlockChain(req, res, next) {
         try {
             const timestamp = new Date().getTime();
-            const fullUrl = `${functions.config().wyre.url}${PAYMENTMETHOD_URL}/${req.params.payment_id}/attach?masqueradeAs=${req.params.account_id}&timestamp=${timestamp}`;
+            const fullUrl = `${functions.config().wyre.url}${PAYMENTMETHOD_URL}/${req.params.payment_id}/attach?timestamp=${timestamp}`;
             const headers = {};
             const body = {
-                blockchain: req.body.blockchain ? req.body.blockchain : "ALL",
-                notify: req.body.notify ? req.body.notify : null,
-                muteMessages: req.body.muteMessages ? req.body.muteMessages : false
+                blockchain: "ALL",
+                notify: null,
+                muteMessages: true
             }
             const details = JSON.stringify(body);
 
             headers['Content-Type'] = 'application/json';
-            headers['X-Api-Key'] = functions.config().wyre.api_key;
+            headers['X-Api-Key'] = functions.config().wyre.key;
             headers['X-Api-Signature'] = signature(fullUrl, details);
 
             const config = {

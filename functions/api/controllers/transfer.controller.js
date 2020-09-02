@@ -4,11 +4,11 @@ const { signature } = require('../utils/signature');
 const { TRANSFERS_URL, RATES_URL } = require('../constants/urls');
 
 
-class transferController {
+class TransferController {
     async createTransfer(req, res, next) {
         try {
             const timestamp = new Date().getTime();
-            const fullUrl = `${functions.config().wyre.url}${TRANSFERS_URL}?masqueradeAs=${req.params.account_id}&timestamp=${timestamp}`;
+            const fullUrl = `${functions.config().wyre.url}${TRANSFERS_URL}?timestamp=${timestamp}`;
             const headers = {};
             const type = req.body.accountsrn.split(':');
             let accountsource = req.body.accountsrn;
@@ -32,7 +32,7 @@ class transferController {
             const details = JSON.stringify(body);
 
             headers['Content-Type'] = 'application/json';
-            headers['X-Api-Key'] = functions.config().wyre.api_key;
+            headers['X-Api-Key'] = functions.config().wyre.key;
             headers['X-Api-Signature'] = signature(fullUrl, details);
 
             const config = {
@@ -53,11 +53,11 @@ class transferController {
     async historyTransfer(req, res, next) {
         try {
                 const timestamp = new Date().getTime();
-                const fullUrl = `${functions.config().wyre.url}${TRANSFERS_URL}?masqueradeAs=${req.params.account_id}&timestamp=${timestamp}`;
+                const fullUrl = `${functions.config().wyre.url}${TRANSFERS_URL}?timestamp=${timestamp}`;
                 const headers = {};
                 const details = "";
                 headers['Content-Type'] = 'application/json';
-                headers['X-Api-Key'] = functions.config().wyre.api_key;
+                headers['X-Api-Key'] = functions.config().wyre.key;
                 headers['X-Api-Signature'] = signature(fullUrl, details);
 
                 const config = {
@@ -77,11 +77,11 @@ class transferController {
     async confirmTransfer(req, res, next) {
         try {
                 const timestamp = new Date().getTime();
-                const fullUrl = `${functions.config().wyre.url}${TRANSFERS_URL}/${req.params.transfer_id}/confirm?masqueradeAs=${req.params.account_id}&timestamp=${timestamp}`;
+                const fullUrl = `${functions.config().wyre.url}${TRANSFERS_URL}/${req.params.transfer_id}/confirm?timestamp=${timestamp}`;
                 const headers = {};
                 const details = "";
                 headers['Content-Type'] = 'application/json';
-                headers['X-Api-Key'] = functions.config().wyre.api_key;
+                headers['X-Api-Key'] = functions.config().wyre.key;
                 headers['X-Api-Signature'] = signature(fullUrl, details);
 
                 const config = {
@@ -99,11 +99,11 @@ class transferController {
     async getTransfer(req, res, next) {
         try {
                 const timestamp = new Date().getTime();
-                const fullUrl = `${functions.config().wyre.url}${TRANSFERS_URL}/${req.params.transfer_id}?masqueradeAs=${req.params.account_id}&timestamp=${timestamp}`;
+                const fullUrl = `${functions.config().wyre.url}${TRANSFERS_URL}/${req.params.transfer_id}?timestamp=${timestamp}`;
                 const headers = {};
                 const details = "";
                 headers['Content-Type'] = 'application/json';
-                headers['X-Api-Key'] = functions.config().wyre.api_key;
+                headers['X-Api-Key'] = functions.config().wyre.key;
                 headers['X-Api-Signature'] = signature(fullUrl, details);
 
                 const config = {
@@ -133,7 +133,7 @@ class transferController {
             const details = JSON.stringify(body);
 
             headers['Content-Type'] = 'application/json';
-            headers['X-Api-Key'] = functions.config().wyre.api_key;
+            headers['X-Api-Key'] = functions.config().wyre.key;
             headers['X-Api-Signature'] = signature(fullUrl, details);
 
             const config = {
@@ -155,5 +155,5 @@ class transferController {
 
 
 module.exports = {
-    transferController: new transferController()
+    transferController: new TransferController()
 }

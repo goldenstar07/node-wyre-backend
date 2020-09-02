@@ -1,10 +1,8 @@
 {
   "wyre": {
-    "api_key": "AK-VF6JCUBF-PM8UQ898-NXP73BHG-9V6FWYRQ",
-    "sec": "SK-XD7YZRDH-7UPX3WW9-9XZ4T7L4-HUJV7N9X",
-    "key": "AK-VF6JCUBF-PM8UQ898-NXP73BHG-9V6FWYRQ",
+    "sec": "SK-Q9LTW7LT-7V6WRFPJ-EZBEMBTW-Z96TVARW",
+    "key": "AK-MJWWX4WM-8TD6A8M3-UYQY4PXF-NDNWLGE2",
     "owner": "AC_YCY6MNJYZW8",
-    "url": "https://api.testwyre.com",
-    "sec_key": "SK-XD7YZRDH-7UPX3WW9-9XZ4T7L4-HUJV7N9X"
+    "url": "https://api.sendwyre.com"
   }
 }

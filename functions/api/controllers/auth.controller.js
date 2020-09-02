@@ -74,13 +74,11 @@ class AuthController {
 
     async uploadData(req, res, next) {
         try {
-            const timestamp = new Date().getTime();
-            const fullUrl = `${functions.config().wyre.url}${ACCOUNT_URL}/${req.params.user_id}/${req.params.field_id}?masqueradeAs=${req.params.user_id}&timestamp=${timestamp}`;
             const headers = {};
             const file = req.files[0];
             const extension = file.originalname.split('.').pop();
-            if(extension == 'pdf') headers['Content-Type'] = 'applicatin/pdf';
-            else if(extension == 'jpeg' || extension == 'JPEG') headers['Content-Type'] = 'image/jpeg';
+            if (extension == 'pdf') headers['Content-Type'] = 'applicatin/pdf';
+            else if (extension == 'jpeg' || extension == 'JPEG' || extension == 'jpg' || extension == 'JPG') headers['Content-Type'] = 'image/jpeg';
             else if (extension == 'png' || extension == 'PNG') headers['Content-Type'] = 'image/png';
             else if (extension == 'doc' || extension == 'DOC') headers['Content-Type'] = 'application/msword';
             else if (extension == 'docx' || extension == 'DOCX') headers['Content-Type'] = 'application/vnd.openxmlformats-officedocument.wordprocessingml.document';
@@ -89,9 +87,11 @@ class AuthController {
                 return;
             }
 
-
-            // let paulo = fs.readFileSync('/Volumes/Work/paulo.jpeg');
-            const qr = { masqueradeAs: req.params.user_id };
+            const qr = {
+                documentType: req.params.doc_type,
+                documentsubType: req.params.subType,
+                masqueradeAs: req.params.user_id
+            };
             const options = {
                 qs: qr,
                 headers: headers
@@ -116,12 +116,7 @@ class AuthController {
         try {
 
             const timestamp = new Date().getTime();
-            const fullUrl = `${functions.config().wyre.url}${ACCOUNT_URL}/${req.params.user_id}?masqueradeAs=${req.params.user_id}&timestamp=${timestamp}`;
-            // if(functions.config().wyre.owner === req.params.user_id){
-            //     fullUrl = `${functions.config().wyre.url}${ACCOUNT_URL}/${req.params.user_id}?&timestamp=${timestamp}`;
-            // } else {
-            //     fullUrl = `${functions.config().wyre.url}${ACCOUNT_URL}/${req.params.user_id}?masqueradeAs=${req.params.user_id}&timestamp=${timestamp}`;
-            // }
+            const fullUrl = `${functions.config().wyre.url}${ACCOUNT_URL}/${req.params.user_id}?timestamp=${timestamp}`;
             const headers = {};
             const details = "";
             headers['Content-Type'] = 'application/json';
@@ -145,7 +140,7 @@ class AuthController {
     async updateAccount(req, res, next) {
         try {
             const timestamp = new Date().getTime();
-            const fullUrl = `${functions.config().wyre.url}${ACCOUNT_URL}/${req.params.user_id}?masqueradeAs=${req.params.user_id}&timestamp=${timestamp}`;
+            const fullUrl = `${functions.config().wyre.url}${ACCOUNT_URL}/${req.params.user_id}?timestamp=${timestamp}`;
             const headers = {};
             let profilefield = [];
             if (req.body.name)
@@ -194,7 +189,7 @@ class AuthController {
             }
             const details = JSON.stringify(body);
             headers['Content-Type'] = 'application/json';
-            headers['X-Api-Key'] = functions.config().wyre.api_key;
+            headers['X-Api-Key'] = functions.config().wyre.key;
             headers['X-Api-Signature'] = signature(fullUrl, details);
 
             const config = {
