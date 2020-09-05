@@ -74,10 +74,12 @@ class AuthController {
 
     async uploadData(req, res, next) {
         try {
+            const timestamp = new Date().getTime();
             const headers = {};
             const file = req.files[0];
             const extension = file.originalname.split('.').pop();
-            if (extension == 'pdf') headers['Content-Type'] = 'applicatin/pdf';
+            console.log(extension)
+            if (extension == 'pdf') headers['Content-Type'] = 'application/pdf';
             else if (extension == 'jpeg' || extension == 'JPEG' || extension == 'jpg' || extension == 'JPG') headers['Content-Type'] = 'image/jpeg';
             else if (extension == 'png' || extension == 'PNG') headers['Content-Type'] = 'image/png';
             else if (extension == 'doc' || extension == 'DOC') headers['Content-Type'] = 'application/msword';
@@ -87,15 +89,14 @@ class AuthController {
                 return;
             }
 
-            const qr = {
-                documentType: req.params.doc_type,
-                documentsubType: req.params.subType
-            };
+            // const qr = {
+            //     documentType: req.params.doc_type,
+            //     documentsubType: req.params.subType
+            // };
             
-            const fullUrl = `${PAYMENTMETHOD_URL}/${req.params.paymentMethodId}/followup`
+            const fullUrl = `${PAYMENTMETHOD_URL}/${req.params.paymentMethodId}/followup?timestamp=${timestamp}`;
             headers[`Authorization:Bearer ${functions.config().wyre.sec}`]
             const options = {
-                qs: qr,
                 headers: headers
             }
             postData(fullUrl, file.buffer, options)
