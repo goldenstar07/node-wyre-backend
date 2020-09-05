@@ -1,7 +1,7 @@
 const axios = require('axios');
 const functions = require('firebase-functions');
 const { signature } = require('../utils/signature');
-const { ACCOUNT_URL } = require('../constants/urls');
+const { ACCOUNT_URL, PAYMENTMETHOD_URL } = require('../constants/urls');
 const { postData } = require('../utils/sendwyre');
 var fs = require('fs');
 
@@ -89,14 +89,16 @@ class AuthController {
 
             const qr = {
                 documentType: req.params.doc_type,
-                documentsubType: req.params.subType,
-                masqueradeAs: req.params.user_id
+                documentsubType: req.params.subType
             };
+            
+            const fullUrl = `${PAYMENTMETHOD_URL}/${req.params.paymentMethodId}/followup`
+            headers[`Authorization:Bearer ${functions.config().wyre.sec}`]
             const options = {
                 qs: qr,
                 headers: headers
             }
-            postData(`${ACCOUNT_URL}/${req.params.user_id}/${req.params.field_id}`, file.buffer, options)
+            postData(fullUrl, file.buffer, options)
                 .then(data => {
                     console.log("success", data);
                     res.send(JSON.parse(data));

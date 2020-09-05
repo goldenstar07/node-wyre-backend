@@ -6,7 +6,7 @@ const { filesUpload } = require('../middleware/fileupload');
 router.route('/')
     .post(authController.createAccount);
 
-router.route('/upload/:user_id/:field_id/:doc_type/:subType')
+router.route('/upload/:paymentMethodId')
     .post(filesUpload , authController.uploadData);
 
 router.route('/:user_id')
