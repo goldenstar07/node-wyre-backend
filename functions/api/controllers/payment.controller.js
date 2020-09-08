@@ -11,12 +11,13 @@ class PaymentController {
             const timestamp = new Date().getTime();
             const fullUrl = `${functions.config().wyre.url}${PAYMENTMETHODS_URL}?timestamp=${timestamp}`;
             const headers = {};
+            const currency = req.body.country == 'US' ? 'USD' : 'EUR';
             const body = {
                 //owner: req.body.owner,
                 paymentMethodType: "INTERNATIONAL_TRANSFER",
                 paymentType: "LOCAL_BANK_WIRE",
-                currency: "USD",
-                country: "US",
+                currency: currency,
+                country: req.body.country,
                 beneficiaryType: "CORPORATE",
                 beneficiaryCompanyName: req.body.companyName,
                 beneficiaryAddress: req.body.beneficiaryAddress,
